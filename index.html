@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vacuum Jig Creator - ShopBot Labs</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.164.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body class="light-mode">
+
+  <!-- Left Sidebar -->
+  <div id="sidebar">
+    <div class="sidebar-header">
+      <h1>Vacuum Jig</h1>
+      <div class="header-controls">
+        <div class="unit-toggle" id="unitToggle">
+          <button class="unit-btn active" data-unit="in">in</button>
+          <button class="unit-btn" data-unit="mm">mm</button>
+        </div>
+        <button id="themeToggle" title="Toggle dark/light mode">
+          <span class="light-icon">&#9790;</span>
+          <span class="dark-icon">&#9788;</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Section 1: Model Input -->
+    <section class="control-section">
+      <h2>3D Model</h2>
+      <div id="dropZone" class="drop-zone">
+        <p>Drag &amp; drop STL or STEP file</p>
+        <label class="file-input-label">
+          Browse Files
+          <input type="file" id="fileInput" accept=".stl,.step,.stp,.STL,.STEP,.STP" hidden>
+        </label>
+      </div>
+      <div id="modelInfo" class="info-block hidden">
+        <div><label>File:</label> <span id="modelFileName">-</span></div>
+        <div><label>Size:</label> <span id="modelSize">-</span></div>
+      </div>
+
+      <div class="input-grid" style="margin-top: 0.75rem;">
+        <label>Orientation:</label>
+        <select id="orientationSelect">
+          <option value="top" selected>Top (Z-down)</option>
+          <option value="front">Front (Y-down)</option>
+          <option value="right">Right (X-down)</option>
+          <option value="back">Back (Y-up)</option>
+          <option value="left">Left (X-up)</option>
+          <option value="bottom">Bottom (Z-up)</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Section 2: Jig Parameters -->
+    <section class="control-section">
+      <h2>Jig Parameters</h2>
+      <div class="input-grid">
+        <label>Wall Margin:</label>
+        <div class="input-with-unit">
+          <input type="number" id="wallMargin" value="0.75" min="0.1" max="4" step="0.05">
+          <span data-unit-label="length">in</span>
+        </div>
+
+        <label>Base Thickness:</label>
+        <div class="input-with-unit">
+          <input type="number" id="baseThickness" value="0.5" min="0.1" max="4" step="0.05">
+          <span data-unit-label="length">in</span>
+        </div>
+
+        <label>Resolution:</label>
+        <div class="input-with-unit">
+          <input type="number" id="resolution" value="0.02" min="0.005" max="0.1" step="0.005">
+          <span data-unit-label="length">in</span>
+        </div>
+      </div>
+
+      <details class="advanced-settings" style="margin-top: 0.75rem;">
+        <summary>Gasket Groove</summary>
+        <div class="input-grid">
+          <label>Width:</label>
+          <div class="input-with-unit">
+            <input type="number" id="grooveWidth" value="0.25" min="0.05" max="1" step="0.025">
+            <span data-unit-label="length">in</span>
+          </div>
+
+          <label>Depth:</label>
+          <div class="input-with-unit">
+            <input type="number" id="grooveDepth" value="0.175" min="0.05" max="0.5" step="0.025">
+            <span data-unit-label="length">in</span>
+          </div>
+
+          <label>Edge Offset:</label>
+          <div class="input-with-unit">
+            <input type="number" id="grooveOffset" value="0.125" min="0.05" max="1" step="0.025">
+            <span data-unit-label="length">in</span>
+          </div>
+
+          <label>Min Radius:</label>
+          <div class="input-with-unit">
+            <input type="number" id="minRadius" value="0.25" min="0" max="2" step="0.025">
+            <span data-unit-label="length">in</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="advanced-settings" style="margin-top: 0.75rem;">
+        <summary>Vacuum Plumbing</summary>
+        <div class="input-grid">
+          <label>Hole Diameter:</label>
+          <div class="input-with-unit">
+            <input type="number" id="holeDiameter" value="0.1875" min="0.0625" max="0.5" step="0.0625">
+            <span data-unit-label="length">in</span>
+          </div>
+
+          <label>Hole Spacing:</label>
+          <div class="input-with-unit">
+            <input type="number" id="holeSpacing" value="2.0" min="0.25" max="4" step="0.125">
+            <span data-unit-label="length">in</span>
+          </div>
+
+          <label>Channel Depth:</label>
+          <div class="input-with-unit">
+            <input type="number" id="channelDepth" value="0.25" min="0.1" max="1" step="0.025">
+            <span data-unit-label="length">in</span>
+          </div>
+
+          <label>Channel Height:</label>
+          <div class="input-with-unit">
+            <input type="number" id="channelHeight" value="0.1875" min="0.0625" max="0.5" step="0.0625">
+            <span data-unit-label="length">in</span>
+          </div>
+
+          <label>Port Diameter:</label>
+          <div class="input-with-unit">
+            <input type="number" id="portDiameter" value="0.375" min="0.125" max="1" step="0.0625">
+            <span data-unit-label="length">in</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="advanced-settings" style="margin-top: 0.75rem;">
+        <summary>Part Rim</summary>
+        <div class="input-grid">
+          <label>Enabled:</label>
+          <div class="input-with-unit">
+            <input type="checkbox" id="rimEnabled">
+          </div>
+
+          <label>Height:</label>
+          <div class="input-with-unit">
+            <input type="number" id="rimHeight" value="0.25" min="0.0625" max="1" step="0.0625">
+            <span data-unit-label="length">in</span>
+          </div>
+
+          <label>Thickness:</label>
+          <div class="input-with-unit">
+            <input type="number" id="rimThickness" value="0.1875" min="0.0625" max="0.5" step="0.0625">
+            <span data-unit-label="length">in</span>
+          </div>
+
+          <label>Gap:</label>
+          <div class="input-with-unit">
+            <input type="number" id="rimGap" value="0.01" min="0" max="0.25" step="0.005">
+            <span data-unit-label="length">in</span>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- Section 3: Generate & Export -->
+    <section class="control-section">
+      <h2>Generate</h2>
+      <div id="jigInfo" class="info-block hidden">
+        <div><label>Jig Size:</label> <span id="jigSize">-</span></div>
+        <div><label>Grid:</label> <span id="jigGrid">-</span></div>
+        <div><label>Triangles:</label> <span id="jigTriangles">-</span></div>
+      </div>
+      <div class="button-row">
+        <button id="generateBtn" class="primary" disabled>Generate Jig</button>
+      </div>
+      <div class="button-row">
+        <button id="exportStlBtn" disabled>Export STL</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Main Canvas Area -->
+  <div id="canvasContainer">
+    <canvas id="threeCanvas"></canvas>
+    <div id="statusBar">
+      <span id="statusText">Ready — Load an STL or STEP file to begin</span>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="hidden">
+    <div class="spinner"></div>
+    <p id="loadingText">Loading...</p>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
