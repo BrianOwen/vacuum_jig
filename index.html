@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vacuum Jig Creator - ShopBot Labs</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="../ui_testbed/themes/tokens.css">
+  <link rel="stylesheet" href="../ui_testbed/themes/components.css">
+  <link rel="stylesheet" href="../ui_testbed/themes/theme-picker.css">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="theme-bridge.css">
   <script type="importmap">
     {
       "imports": {
@@ -14,27 +19,27 @@
     }
   </script>
 </head>
-<body class="light-mode">
+<body>
 
-  <!-- Left Sidebar -->
+  <!-- Top bar auto-injected by theme-picker.js -->
+
   <div id="sidebar">
-    <div class="sidebar-header">
-      <h1>Vacuum Jig</h1>
+    <div class="sidebar-header sb-header">
+      <div class="sb-brand">
+        <a href="/"><img src="../ui_testbed/SBLogo Crop.png" alt="ShopBot Labs" class="sidebar-logo sb-brand-logo"></a>
+        <span class="sb-brand-name">Vacuum Jig</span>
+      </div>
       <div class="header-controls">
-        <div class="unit-toggle" id="unitToggle">
-          <button class="unit-btn active" data-unit="in">in</button>
-          <button class="unit-btn" data-unit="mm">mm</button>
+        <div class="unit-toggle sb-toggle">
+          <button class="unit-btn sb-toggle-btn active" data-unit="in">in</button>
+          <button class="unit-btn sb-toggle-btn" data-unit="mm">mm</button>
         </div>
-        <button id="themeToggle" title="Toggle dark/light mode">
-          <span class="light-icon">&#9790;</span>
-          <span class="dark-icon">&#9788;</span>
-        </button>
       </div>
     </div>
 
     <!-- Section 1: Model Input -->
-    <section class="control-section">
-      <h2>3D Model</h2>
+    <section class="control-section sb-section">
+      <h2 class="sb-section-title">3D Model</h2>
       <div id="dropZone" class="drop-zone">
         <p>Drag &amp; drop STL or STEP file</p>
         <label class="file-input-label">
@@ -61,8 +66,8 @@
     </section>
 
     <!-- Section 2: Jig Parameters -->
-    <section class="control-section">
-      <h2>Jig Parameters</h2>
+    <section class="control-section sb-section">
+      <h2 class="sb-section-title">Jig Parameters</h2>
       <div class="input-grid">
         <label>Wall Margin:</label>
         <div class="input-with-unit">
@@ -83,7 +88,7 @@
         </div>
       </div>
 
-      <details class="advanced-settings" style="margin-top: 0.75rem;">
+      <details class="advanced-settings sb-collapsible" style="margin-top: 0.75rem;">
         <summary>Gasket Groove</summary>
         <div class="input-grid">
           <label>Width:</label>
@@ -112,7 +117,7 @@
         </div>
       </details>
 
-      <details class="advanced-settings" style="margin-top: 0.75rem;">
+      <details class="advanced-settings sb-collapsible" style="margin-top: 0.75rem;">
         <summary>Vacuum Plumbing</summary>
         <div class="input-grid">
           <label>Hole Diameter:</label>
@@ -147,7 +152,7 @@
         </div>
       </details>
 
-      <details class="advanced-settings" style="margin-top: 0.75rem;">
+      <details class="advanced-settings sb-collapsible" style="margin-top: 0.75rem;">
         <summary>Part Rim</summary>
         <div class="input-grid">
           <label>Enabled:</label>
@@ -177,18 +182,18 @@
     </section>
 
     <!-- Section 3: Generate & Export -->
-    <section class="control-section">
-      <h2>Generate</h2>
+    <section class="control-section sb-section">
+      <h2 class="sb-section-title">Generate</h2>
       <div id="jigInfo" class="info-block hidden">
         <div><label>Jig Size:</label> <span id="jigSize">-</span></div>
         <div><label>Grid:</label> <span id="jigGrid">-</span></div>
         <div><label>Triangles:</label> <span id="jigTriangles">-</span></div>
       </div>
       <div class="button-row">
-        <button id="generateBtn" class="primary" disabled>Generate Jig</button>
+        <button id="generateBtn" class="sb-btn-action" disabled>Generate Jig</button>
       </div>
       <div class="button-row">
-        <button id="exportStlBtn" disabled>Export STL</button>
+        <button id="exportStlBtn" class="sb-btn-output" disabled>Export STL</button>
       </div>
     </section>
   </div>
@@ -208,5 +213,9 @@
   </div>
 
   <script type="module" src="main.js"></script>
+  <script type="module">
+    import { initThemePicker } from '../ui_testbed/themes/theme-picker.js';
+    initThemePicker();
+  </script>
 </body>
 </html>

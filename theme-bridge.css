@@ -1,0 +1,122 @@
+/* ═══════════════════════════════════════════════════════════════
+   Vacuum Jig — Theme Bridge
+   Maps local CSS variables to shared --t-* tokens.
+   ═══════════════════════════════════════════════════════════════ */
+
+[class*="theme-"] {
+  --primary:       var(--t-bg-header);
+  --accent:        var(--t-accent);
+  --accent-hover:  var(--t-accent);
+  --bg-primary:    var(--t-bg-primary);
+  --bg-secondary:  var(--t-bg-secondary);
+  --bg-tertiary:   var(--t-bg-tertiary);
+  --text-primary:  var(--t-text);
+  --text-secondary: var(--t-text-dim);
+  --border-color:  var(--t-border);
+}
+
+body { padding-top: var(--sb-topbar-h); box-sizing: border-box; }
+#sidebar { top: var(--sb-topbar-h) !important; }
+#canvasContainer { top: var(--sb-topbar-h) !important; }
+
+[class*="theme-"] #sidebar { padding: 0; gap: 0; }
+
+[class*="theme-"] .control-section h2 {
+  color: var(--t-text-dim);
+  font-size: var(--t-fs-section);
+  text-shadow: var(--t-text-glow, none);
+}
+
+[class*="theme-"] .input-grid label {
+  font-size: var(--t-fs-label);
+  color: var(--t-text-dim);
+  font-weight: var(--t-label-weight, 400);
+  text-shadow: var(--t-text-glow, none);
+}
+
+/* ── SB 1.0: amber terminal ── */
+.theme-shopbot1 .control-section h2 {
+  color: #f09040;
+  text-shadow: 0 0 6px rgba(240,144,64,0.35);
+}
+.theme-shopbot1 .control-section h2::before {
+  content: '// ';
+  color: #a05818;
+}
+
+/* ── SBcode: syntax coloring ── */
+.theme-devdark .control-section h2::before { content: '// '; color: #6a9955; }
+.theme-devdark .control-section:nth-child(1) h2 { color: #c586c0; }
+.theme-devdark .control-section:nth-child(2) h2 { color: #4ec9b0; }
+.theme-devdark .control-section:nth-child(3) h2 { color: #dcdcaa; }
+.theme-devdark .input-grid label { color: var(--t-syntax-param); }
+.theme-devdark input[type="number"] { color: var(--t-syntax-number) !important; }
+
+/* ── ShopBot 3: ruled legal-pad sidebar ── */
+.theme-shopbot3 .sb-header {
+  height: 90px !important;
+  box-sizing: border-box !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.theme-shopbot3 #sidebar {
+  background-color: #fef9c3;
+  background-image:
+    linear-gradient(to right, transparent 44px, #e06060 44px, #e06060 46px, transparent 46px),
+    repeating-linear-gradient(to bottom, transparent 0px, transparent 29px, #aecfea 29px, #aecfea 30px);
+  background-attachment: local;
+}
+
+.theme-shopbot3 .control-section {
+  background: transparent !important;
+  border-bottom: none !important;
+  padding: 0 1rem 0 56px !important;
+}
+
+.theme-shopbot3 .control-section h2 {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  color: #5a2800;
+  font-size: 16px;
+}
+
+.theme-shopbot3 .input-grid {
+  gap: 0 !important;
+  grid-auto-rows: 30px;
+  align-items: center;
+}
+.theme-shopbot3 .input-grid label {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 16px;
+}
+
+.theme-shopbot3 .input-with-unit { height: 30px; }
+.theme-shopbot3 input[type="number"],
+.theme-shopbot3 select {
+  height: 30px;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-radius: 0 !important;
+  font-size: 16px;
+}
+.theme-shopbot3 .input-with-unit span { font-size: 16px; }
+
+.theme-shopbot3 .button-row {
+  margin: 0 !important;
+  height: 30px;
+  flex-wrap: nowrap !important;
+}
+.theme-shopbot3 .button-row button {
+  height: 30px;
+  padding: 0 0.5rem !important;
+  border-radius: 0 !important;
+  font-size: 14px;
+}

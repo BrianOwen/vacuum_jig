@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { state, setStatus, setLoading } from './state.js';
 import { loadFile, orientModel, calculateBoundingBox } from './modules/model-loader.js';
 import { generateMinZHeightmap, generateJigMesh } from './modules/jig-gen.js';
-import { initThreeScene, showModel, showJig, fitCamera, clearScene, setTheme } from './modules/preview.js';
+import { initThreeScene, showModel, showJig, fitCamera, clearScene, syncThemeColors } from './modules/preview.js';
 import { exportSTL } from './modules/export.js';
 
 // ---------------------------------------------------------------------------
@@ -45,14 +45,15 @@ const jigSize = document.getElementById('jigSize');
 const jigGrid = document.getElementById('jigGrid');
 const jigTriangles = document.getElementById('jigTriangles');
 
-const themeToggle = document.getElementById('themeToggle');
-const unitToggle = document.getElementById('unitToggle');
-
 // ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
 
 initThreeScene();
+
+// Sync Three.js scene on theme change
+new MutationObserver(() => syncThemeColors())
+  .observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
 // ---------------------------------------------------------------------------
 // File loading
@@ -286,18 +287,6 @@ exportStlBtn.addEventListener('click', () => {
   const baseName = state.model.fileName.replace(/\.[^.]+$/, '');
   exportSTL(state.generated.jigGeometry, `jig_${baseName}.stl`);
   setStatus('Exported jig_' + baseName + '.stl');
-});
-
-// ---------------------------------------------------------------------------
-// Theme toggle
-// ---------------------------------------------------------------------------
-
-themeToggle.addEventListener('click', () => {
-  const body = document.body;
-  const isDark = body.classList.contains('dark-mode');
-  body.classList.toggle('dark-mode', !isDark);
-  body.classList.toggle('light-mode', isDark);
-  setTheme(!isDark);
 });
 
 // ---------------------------------------------------------------------------

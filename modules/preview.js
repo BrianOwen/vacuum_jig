@@ -6,7 +6,24 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let renderer, scene, camera, controls;
 let modelGroup, jigMesh;
-let isDarkMode = false;
+
+// ── Read theme tokens from CSS ──────────────────────────────
+function getThemeColors() {
+  const css = getComputedStyle(document.body);
+  const read = (prop, fallback) => css.getPropertyValue(prop).trim() || fallback;
+  const themed = read('--t-mesh-style', '') === 'themed';
+  return {
+    canvasBg:        read('--t-canvas-bg', '#f0f0f0'),
+    themed,
+    meshDefault:     read('--t-mesh-default', '#cccccc'),
+    meshOpacity:     parseFloat(read('--t-mesh-opacity', '1')),
+    meshEmissive:    read('--t-mesh-emissive', '#000000'),
+    meshEmissiveInt: parseFloat(read('--t-mesh-emissive-intensity', '0')),
+    meshEdgeColor:   read('--t-mesh-edge-color', '#333333'),
+    meshEdgeOpacity: parseFloat(read('--t-mesh-edge-opacity', '1')),
+    accent:          read('--t-accent', '#2090a0'),
+  };
+}
 
 export function initThreeScene() {
   const canvas = document.getElementById('threeCanvas');
@@ -17,7 +34,7 @@ export function initThreeScene() {
   renderer.setSize(container.clientWidth, container.clientHeight);
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf0f0f0);
+  scene.background = new THREE.Color(getThemeColors().canvasBg);
 
   const aspect = container.clientWidth / container.clientHeight;
   camera = new THREE.PerspectiveCamera(45, aspect, 0.001, 1000);
@@ -88,16 +105,21 @@ export function showModel(group) {
   clearModel();
   modelGroup = group.clone(true);
 
-  // Make semi-transparent
+  const tc = getThemeColors();
+  const modelColor = tc.themed ? tc.meshDefault : '#8888cc';
+
   modelGroup.traverse(child => {
     if (child.isMesh) {
       child.material = child.material.clone();
       child.material.transparent = true;
       child.material.opacity = 0.35;
       child.material.depthWrite = false;
-      child.material.color.set(0x8888cc);
+      child.material.color.set(modelColor);
+      if (tc.themed) {
+        child.material.emissive = new THREE.Color(tc.meshEmissive);
+        child.material.emissiveIntensity = tc.meshEmissiveInt * 0.5;
+      }
     }
-    // Hide edge wireframes on the transparent model
     if (child.isLineSegments) {
       child.visible = false;
     }
@@ -123,17 +145,24 @@ export function showModel(group) {
 export function showJig(geometry) {
   clearJig();
 
+  const tc = getThemeColors();
+
   const material = new THREE.MeshPhongMaterial({
     vertexColors: true,
     side: THREE.DoubleSide,
     shininess: 30,
+    emissive: new THREE.Color(tc.themed ? tc.meshEmissive : '#000000'),
+    emissiveIntensity: tc.meshEmissiveInt,
   });
 
   jigMesh = new THREE.Mesh(geometry, material);
 
-  // Add edge wireframe
   const edges = new THREE.EdgesGeometry(geometry, 20);
-  const edgeMat = new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.15 });
+  const edgeMat = new THREE.LineBasicMaterial({
+    color: new THREE.Color(tc.themed ? tc.meshEdgeColor : '#333333'),
+    transparent: true,
+    opacity: tc.themed ? tc.meshEdgeOpacity * 0.3 : 0.15,
+  });
   jigMesh.add(new THREE.LineSegments(edges, edgeMat));
 
   scene.add(jigMesh);
@@ -152,12 +181,43 @@ export function fitCamera(width, height, depth) {
 }
 
 // ---------------------------------------------------------------------------
-// Theme
+// Theme sync — re-read CSS tokens and update all scene objects
 // ---------------------------------------------------------------------------
 
-export function setTheme(isDark) {
-  isDarkMode = isDark;
-  if (scene) {
-    scene.background = new THREE.Color(isDark ? 0x1d1d1f : 0xf0f0f0);
+export function syncThemeColors() {
+  if (!scene) return;
+  const tc = getThemeColors();
+
+  scene.background = new THREE.Color(tc.canvasBg);
+
+  // Restyle model (semi-transparent part)
+  if (modelGroup) {
+    const modelColor = tc.themed ? tc.meshDefault : '#8888cc';
+    modelGroup.traverse(child => {
+      if (child.isMesh && child.material) {
+        child.material.color.set(modelColor);
+        if (tc.themed && child.material.emissive) {
+          child.material.emissive.set(tc.meshEmissive);
+          child.material.emissiveIntensity = tc.meshEmissiveInt * 0.5;
+        }
+        child.material.needsUpdate = true;
+      }
+    });
+  }
+
+  // Restyle jig mesh
+  if (jigMesh) {
+    if (jigMesh.material && jigMesh.material.isMeshPhongMaterial) {
+      jigMesh.material.emissive.set(tc.themed ? tc.meshEmissive : '#000000');
+      jigMesh.material.emissiveIntensity = tc.meshEmissiveInt;
+      jigMesh.material.needsUpdate = true;
+    }
+    jigMesh.traverse(child => {
+      if (child.isLineSegments && child.material) {
+        child.material.color.set(tc.themed ? tc.meshEdgeColor : '#333333');
+        child.material.opacity = tc.themed ? tc.meshEdgeOpacity * 0.3 : 0.15;
+        child.material.needsUpdate = true;
+      }
+    });
   }
 }
