@@ -29,7 +29,7 @@
       <div class="sb-brand">
         <a href="/"><img src="../ui_testbed/SBLogo Crop.png" alt="ShopBot Labs" class="sidebar-logo sb-brand-logo"></a>
         <span class="sb-brand-name">Vacuum Jig</span>
-        <span class="app-version">v1.4</span>
+        <span class="app-version">v1.5</span>
       </div>
       <div class="header-controls">
         <div class="unit-toggle sb-toggle">
@@ -38,6 +38,8 @@
         </div>
       </div>
     </div>
+
+    <div class="sidebar-body sb-panel">
 
     <!-- Section 1: Model Input -->
     <section class="control-section sb-section">
@@ -159,7 +161,7 @@
         <div class="input-grid">
           <label>Enabled:</label>
           <div class="input-with-unit">
-            <input type="checkbox" id="rimEnabled">
+            <label class="sb-checkbox"><input type="checkbox" id="rimEnabled"><span></span></label>
           </div>
 
           <label>Height:</label>
@@ -198,6 +200,7 @@
         <button id="exportStlBtn" class="sb-btn-output" disabled>Export STL</button>
       </div>
     </section>
+    </div>
   </div>
 
   <!-- Main Canvas Area -->

@@ -21,6 +21,14 @@ body { padding-top: var(--sb-topbar-h); box-sizing: border-box; }
 
 [class*="theme-"] #sidebar { padding: 0; gap: 0; }
 
+/* ── .sb-panel contract: header fixed, .sidebar-body scrolls ── */
+body[class*="theme-"] #sidebar {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+body[class*="theme-"] #sidebar .sb-header { flex-shrink: 0; }
+
 [class*="theme-"] .control-section h2 {
   color: var(--t-text-dim);
   font-size: var(--t-fs-section);
@@ -62,13 +70,8 @@ body { padding-top: var(--sb-topbar-h); box-sizing: border-box; }
   align-items: flex-start;
 }
 
-.theme-shopbot3 #sidebar {
-  background-color: #fef9c3;
-  background-image:
-    linear-gradient(to right, transparent 44px, #e06060 44px, #e06060 46px, transparent 46px),
-    repeating-linear-gradient(to bottom, transparent 0px, transparent 29px, #aecfea 29px, #aecfea 30px);
-  background-attachment: local;
-}
+/* Ruled-paper background now comes from components.css
+   `.theme-shopbot3 .sb-panel` on the .sidebar-body wrapper. */
 
 .theme-shopbot3 .control-section {
   background: transparent !important;
