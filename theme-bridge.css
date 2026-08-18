@@ -123,3 +123,16 @@ body[class*="theme-"] #sidebar .sb-header { flex-shrink: 0; }
   border-radius: 0 !important;
   font-size: 14px;
 }
+
+/* ── Field text → --t-input-text token ──────────────────────────────────
+   Typed/selected values follow the dedicated --t-input-text token (falls
+   back to --t-text, so themes that don't set it are unchanged). This bridge
+   loads last, so it wins over the app's own field colors without !important
+   (which keeps devdark's syntax-colored number inputs intact). ── */
+body[class*="theme-"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+body[class*="theme-"] textarea,
+body[class*="theme-"] select,
+body[class*="theme-"] select option {
+  color: var(--t-input-text, var(--t-text));
+  font-weight: var(--t-input-weight, normal);
+}
